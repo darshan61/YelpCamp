@@ -12,8 +12,9 @@
                     <input class="form-control" required type="number" name="campground[price]" value="<%=campground.price%>" min="100" step="50">
                 </div>
                 <div class="form-group">
-                    <label for="image">Image</label>
-                    <input type="file" id="image" name="image" accept="image/*" required>
+                    <img class="thumbnail" src="<%=campground.image.url%>">
+                    <label for="image">Choose a different image</label>
+                    <input type="file" id="image" name="image" accept="image/*">
                 </div> 
                 <div class="form-group">
                     <input class="form-control" required type="text" name="campground[description]" value="<%=campground.description%>">
