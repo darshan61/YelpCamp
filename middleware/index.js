@@ -1,10 +1,12 @@
 // all the middleware goes here
 
 var Campground = require("../models/campground"),
-    Comment = require("../models/comment");
-
-
+    Comment = require("../models/comment"),
+    multer = require('multer'),
+    cloudinary = require('cloudinary');
+    
 var middlewareObj = {};
+    
 
 middlewareObj.checkCampgroundOwnership = function (req, res, next){
   if (req.isAuthenticated()){
@@ -60,5 +62,29 @@ middlewareObj.isLoggedIn = function (req,res,next){
 }
 
 
+var storage = multer.diskStorage({
+  filename: function(req, file, callback) {
+    callback(null, Date.now() + file.originalname);
+  }
+});
+
+var imageFilter = function (req, file, cb) {
+    // accept image files only
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+        return cb(new Error('Only image files are allowed!'), false);
+    }
+    cb(null, true);
+};
+
+
+middlewareObj.upload = multer({ storage: storage, fileFilter: imageFilter});
+
+cloudinary.config({ 
+  cloud_name: 'darshan61', 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+middlewareObj.cloudinary = cloudinary;
 
 module.exports = middlewareObj;
