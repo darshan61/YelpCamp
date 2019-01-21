@@ -1,32 +1,8 @@
 var express = require("express"),
     Campground = require("../models/campground"),
     router = express.Router(),
-    middleware = require("../middleware"),
-    multer = require('multer'),
-    cloudinary = require('cloudinary');
-    
-    
-var storage = multer.diskStorage({
-  filename: function(req, file, callback) {
-    callback(null, Date.now() + file.originalname);
-  }
-});
+    middleware = require("../middleware");
 
-var imageFilter = function (req, file, cb) {
-    // accept image files only
-    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
-        return cb(new Error('Only image files are allowed!'), false);
-    }
-    cb(null, true);
-};
-
-var upload = multer({ storage: storage, fileFilter: imageFilter});
-
-cloudinary.config({ 
-  cloud_name: 'darshan61', 
-  api_key: process.env.CLOUDINARY_API_KEY, 
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
 
 router.get("/", function(req,res){
     Campground.find(function(err,campgrounds){
@@ -38,8 +14,8 @@ router.get("/", function(req,res){
     });
 });
 
-router.post("/",middleware.isLoggedIn, upload.single('image'),function(req,res){
-    cloudinary.uploader.upload(req.file.path, function(result) {
+router.post("/",middleware.isLoggedIn, middleware.upload.single('image'),function(req,res){
+    middleware.cloudinary.uploader.upload(req.file.path, function(result) {
         console.log(req.file.path);
         console.log(result);
   // add cloudinary url for the image to the campground object under image property
@@ -70,10 +46,10 @@ router.get("/:id/edit",middleware.checkCampgroundOwnership,function(req,res){
     });
 });
 
-router.put("/:id",middleware.checkCampgroundOwnership,upload.single('image'),function(req,res){
+router.put("/:id",middleware.checkCampgroundOwnership,middleware.upload.single('image'),function(req,res){
     var campground = req.body.campground;
     if (req.file && req.file.path){
-        cloudinary.uploader.upload(req.file.path, function(result) {
+        middleware.cloudinary.uploader.upload(req.file.path, function(result) {
         // req.body.image = result.secure_url;
         console.log(result);
             if (!req.file.path){
@@ -112,7 +88,7 @@ router.delete("/:id",middleware.checkCampgroundOwnership,function(req,res){
             res.redirect("/campgrounds");
         }else {
             console.log(deletedCampground);
-            cloudinary.v2.uploader.destroy(deletedCampground.image.public_id, {invalidate: true }, function(error, result) {
+            middleware.cloudinary.v2.uploader.destroy(deletedCampground.image.public_id, {invalidate: true }, function(error, result) {
                 if(error){
                     console.log(error);
                     console.log("image cannot be destroyed from cloudinary");
