@@ -51,7 +51,7 @@ router.put("/:id",middleware.checkCampgroundOwnership,middleware.upload.single('
     if (req.file && req.file.path){
         middleware.cloudinary.uploader.upload(req.file.path, function(result) {
         // req.body.image = result.secure_url;
-        console.log(result);
+        // console.log(result);
             if (!req.file.path){
                 campground.image = {url: result.secure_url, public_id: result.public_id};
             }
