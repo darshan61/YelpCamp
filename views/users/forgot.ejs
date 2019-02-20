@@ -1,0 +1,27 @@
+<% include ../partials/header %>
+
+<!--<h1>Please register yourself</h1>-->
+<!--<form action="/register" method="POST">-->
+<!--    <input type="text" name = "username" placeholder="username">-->
+<!--    <input type="password" name = "password" placeholder="password">-->
+<!--    <button>Submit!</button>-->
+<!--</form>-->
+
+<div class="container">
+    <div class="row">
+        <div style="width:30%; margin:25px auto">
+            <form class="form-horizontal" action="/forgot" method= "POST">
+                <div class="form-group ">
+                    <label class="control-label" for="username">Please enter your email address</label>
+                    <input class="form-control" type="email" autofocus required name="emailaddress" placeholder="email address">
+                </div>
+                <div class="form-group ">
+                    <button class="btn btn-default btn-primary">Reset Password</button>
+                </div>
+            </form>
+            <!--<a href="/campgrounds">Go Back</a>-->
+        </div>
+    </div>
+</div>
+
+<% include ../partials/footer %>
